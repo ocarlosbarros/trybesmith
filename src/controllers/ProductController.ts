@@ -1,21 +1,21 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import ProductService from '../services/ProductService';
 
-const findAll = (_request: Request, _response: Response): void => {
-  const products:string[] = [];
-  try {
-    console.log(products);
-  } catch (error) {
-    console.log(error);
-  }
-};
+export default class ProductController {
+  constructor(private productService = new ProductService()) {}
 
-const create = (request: Request, response: Response) => {
-  const product = request.body;
-  console.log(product);
-  return response.status(200).json({ message: 'OK' });
-};
+  public findAll = async (_request: Request, response: Response, next: NextFunction) => {
+    try {
+      const products = await this.productService.findAll();
+      return response.status(200).json(products);
+    } catch (error) {
+      next(error);
+    }
+  };
 
-export {
-  findAll,
-  create,
-};
+  public create = (request: Request, response: Response) => {
+    const product = request.body;
+    console.log(product);
+    return response.status(200).json({ message: 'OK' });
+  };
+}

@@ -1,4 +1,4 @@
-import { Pool } from 'mysql2/promise';
+import { Pool, ResultSetHeader } from 'mysql2/promise';
 import IProduct from '../intefaces/IProduct';
 
 export default class ProductModel {
@@ -15,5 +15,17 @@ export default class ProductModel {
     const [row] = result;
   
     return row as IProduct[];
+  };
+
+  public create = async (product: IProduct) => {
+    const { name, amount } = product;
+    const query = 'INSERT INTO Trybesmith.Products(name, amount) VALUES (?, ?);';
+    const result = await this.connection.execute<ResultSetHeader>(
+      query,
+      [name, amount],
+    );
+    const [dataInserted] = result;
+    const { insertId } = dataInserted;
+    return { id: insertId, ...product };
   };
 }

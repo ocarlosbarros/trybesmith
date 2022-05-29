@@ -1,7 +1,7 @@
 interface IProduct {
-  id?:string;
+  id?:number;
   name: string;
-  amout: string;
+  amount: string;
   orderId: string;
 }
 

@@ -13,9 +13,13 @@ export default class ProductController {
     }
   };
 
-  public create = (request: Request, response: Response) => {
-    const product = request.body;
-    console.log(product);
-    return response.status(200).json({ message: 'OK' });
+  public create = async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const product = request.body;
+      const created = await this.productService.create(product);
+      return response.status(201).json(created);
+    } catch (error) {
+      next(error);
+    }
   };
 }

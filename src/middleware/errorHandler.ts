@@ -1,5 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import 'express-async-errors';
+import Joi from 'joi';
+
+type CustomError = {
+  name:string,
+  details?: Array<Joi.AnySchema>,
+};
 
 const errorHandler = async (
   error: Error,
@@ -7,10 +13,10 @@ const errorHandler = async (
   response: Response,
   next: NextFunction,
 ) => {
-  const { name, details } = error as any;
+  const { name, details } = error as CustomError;
   switch (name) {
     case 'ValidationError': {
-      console.log(details[0].type);
+      if (!details) break;
       const statusCode: number = details[0].type === 'any.required' ? 400 : 422; 
       return response.status(statusCode).json({ message: details[0].message });
     }

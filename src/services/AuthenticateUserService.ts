@@ -6,7 +6,7 @@ import UserModel from '../models/UserModel';
 export default class AuthenticateUserService {
   public model: UserModel;
   
-  private secret = process.env.JWT_SECRET || '';
+  private secret = process.env.JWT_SECRET || '!MoMkVdqx%v49J';
 
   getSecret() {
     return this.secret;

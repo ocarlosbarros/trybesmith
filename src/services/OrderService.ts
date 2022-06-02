@@ -20,4 +20,13 @@ export default class OrderService {
       productsIds,
     }));
   };
+
+  public create = async (userId: number, productsIds: number[]) => {
+    const order = await this.orderModel.create(userId);
+
+    await Promise.all(productsIds.map(async (productId) => (
+      this.productModel.update(order, productId))));
+    
+    return { userId, productsIds };
+  };
 }

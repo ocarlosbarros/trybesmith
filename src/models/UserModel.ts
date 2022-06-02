@@ -32,4 +32,15 @@ export default class UserModel {
     const [user] = rows as IUser[];
     return user;
   };
+
+  public findUserByCredentials = async (username: string, password: string): Promise<IUser> => {
+    const query = 'SELECT * FROM Trybesmith.Users WHERE username = ? AND password = ?;';
+    const result = await this.connection.execute(
+      query,
+      [username, password],
+    );
+    const [rows] = result;
+    const [user] = rows as IUser[];
+    return user;
+  };
 }

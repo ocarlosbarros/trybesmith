@@ -1,5 +1,6 @@
 import Jwt from 'jsonwebtoken';
 import IUser from '../intefaces/IUser';
+import AuthenticationError from '../models/AuthenticationError';
 import connection from '../models/connection';
 import UserModel from '../models/UserModel';
 
@@ -17,10 +18,21 @@ export default class AuthenticateUserService {
   }
 
   public authenticate = async (user:IUser) => {
-    const { id } = user;
+    const { id, username, password } = user;
     
-    if (!id) return;
-    
+    if (!id) {
+      const userAuthenticated = await this.model.findUserByCredentials(username, password);
+      
+      if (!userAuthenticated) throw new AuthenticationError('Username or password invalid');
+
+      const secret = this.getSecret(); 
+      
+      const token = Jwt.sign({ payload: { id: userAuthenticated.id,
+        username: userAuthenticated.username } }, secret);
+
+      return token;
+    }
+
     const founded = await this.model.findById(id);
 
     if (!founded) throw new Error('Invalid fields');

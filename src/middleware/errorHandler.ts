@@ -5,21 +5,19 @@ import Joi from 'joi';
 type CustomError = {
   name:string,
   details?: Array<Joi.AnySchema>,
+  message?: string,
 };
 
-const errorHandler = async (
-  error: Error,
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
-  const { name, details } = error as CustomError;
+const handler = async (error: Error, request: Request, response: Response, next: NextFunction) => {
+  const { name, details, message } = error as CustomError;
   switch (name) {
     case 'ValidationError': {
       if (!details) break;
       const statusCode: number = details[0].type === 'any.required' ? 400 : 422; 
       return response.status(statusCode).json({ message: details[0].message });
     }
+    case 'AuthenticationError': 
+      return response.status(401).json({ message });
     default:
       console.error(error);
       response.sendStatus(500);
@@ -29,4 +27,4 @@ const errorHandler = async (
   next();
 };
 
-export default errorHandler;
+export default handler;

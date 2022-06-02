@@ -21,4 +21,14 @@ export default class UserController {
       next(error);
     }
   };
+
+  public login = async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const { username, password } = request.body;
+      const token = await this.authenticateUserService.authenticate({ username, password });
+      return response.status(200).json({ token });
+    } catch (error) {
+      next(error);      
+    }
+  };
 }

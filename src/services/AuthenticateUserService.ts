@@ -27,8 +27,8 @@ export default class AuthenticateUserService {
 
       const secret = this.getSecret(); 
       
-      const token = Jwt.sign({ payload: { id: userAuthenticated.id,
-        username: userAuthenticated.username } }, secret);
+      const token = Jwt.sign({ id: userAuthenticated.id,
+        username: userAuthenticated.username }, secret);
 
       return token;
     }
